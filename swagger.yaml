@@ -1,0 +1,393 @@
+swagger: "2.0"
+info:
+  description: "This is a sample Elevate server. For this sample, you can use the api key `special-key` to test the authorization filters."
+  version: "1.0.0"
+  title: "Elevate API"
+  termsOfService: "http://swagger.io/terms/"
+  contact:
+    email: "apiteam@swagger.io"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "petstore.swagger.io"
+basePath: "/v2"
+schemes:
+- "https"
+- "http"
+paths:
+  #CREATE API
+  /api/connected-account/verify-vendor:
+    post:
+      tags:
+      - "Verify vendorAccountId"
+      summary: "verify vendorAccountId (if verified, create new connected_account entry)"
+      operationId: "verifyVendorAccount({ teamAccountId, vendorName, vendorAccountId })"
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      # - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "teamAccountId"
+        in: "formData"
+        description: "(eg; \"Ldsn3m2vds4hvgd28\")"
+        required: true
+        type: "string"
+      - name: "vendorName"
+        in: "formData"
+        description: "(eg; \"OD\")"
+        required: true
+        type: "string"
+      - name: "vendorAccountId"
+        in: "formData"
+        description: "(eg; 87634123)"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        "200":
+          description: "{ \ndata: { \nconnectedAccountId, \nvendorName, \nvendorAccountId, \nteamAccountId, \nstatus \n}, \nsuccess: true, \nerror: null \n}"
+        "500":
+          description: "{ \ndata: { \nconnectedAccountId: null, \nvendorName, \nvendorAccountId, \nteamAccountId, \nstatus: \"ERROR\" \n}, \nsucces: false, \nerror: error \n}"
+      security:
+      - petstore_auth:
+        - "write:connected-accounts"
+        - "read:connected-accounts"
+  /api/special-product/new:
+    post:
+      tags:
+      - "Create Special Product"
+      summary: "create a single special_product entry"
+      description: ""
+      consumes:
+      - "application/x-www-form-urlencoded"
+      produces:
+      # - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "specialProductId"
+        in: "formData"
+        description: "(eg; \"?\")"
+        required: true
+        type: "string"
+      - name: "productId"
+        in: "formData"
+        description: "(eg; \"?\")"
+        required: true
+        type: "string"
+      - name: "specialType"
+        in: "formData"
+        description: "(eg; \"CASHBACK\", \"SAVINGS\")"
+        required: false
+        type: "string"
+      - name: "specialMod"
+        in: "formData"
+        description: "(eg; 0.23)"
+        required: false
+        type: "number"
+      - name: "specialLimit"
+        in: "formData"
+        description: "(eg; 4)"
+        required: false
+        type: "integer"
+        format: "int64"
+      - name: "totalIssued"
+        in: "formData"
+        description: "(eg; 3)"
+        required: false
+        type: "integer"
+        format: "int64"
+      - name: "totalClaimed"
+        in: "formData"
+        description: "(eg; 1)"
+        required: false
+        type: "integer"
+        format: "int64"
+      - name: "totalAvailable"
+        in: "formData"
+        description: "(eg; 10)"
+        required: false
+        type: "integer"
+        format: "int64"
+      - name: "dateActivated"
+        in: "formData"
+        description: "(eg; \"?\")"
+        required: false
+        type: "string"
+        format: "date-time"
+      - name: "dateDeactivated"
+        in: "formData"
+        description: "(eg; \"?\")"
+        required: false
+        type: "string"
+        format: "date-time"
+      - name: "isFake"
+        in: "formData"
+        description: "(eg; \"true\", \"false\")"
+        required: false
+        type: "boolean"
+        format: "integer"
+      responses:
+        "200":
+          description: "{ \ndata: { \nid, \nspecialProductId, \nproductId, \nspecialType, \nspecialMod, \nspecialLimit, \ntotalIssued, \ntotalClaimed, \ntotalAvailable, \ndateActivated, \ndateDeactivated, \nisFake \n}, \nsuccess: true, \nerror: null \n}"
+        "500":
+          description: "{ \ndata: null, \nsucces: false, \nerror: error \n}"
+      # security:
+      # - petstore_auth:
+      #   - "write:special-products"
+      #   - "read:special-products"
+  
+  #READ API
+  /api/connected-account/current-activity/{teamAccountId}:
+    get:
+      tags:
+        - "Fetch Connected Account Activity by teamAccountID"
+      summary: "fetch connected_account_activity"
+      operationId: "getConnectedAccountActivity"
+      produces:
+      # - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "teamAccountId"
+        in: "path"
+        description: "(eg; \"Ldsn3m2vds4hvgd28\")"
+        required: true
+        type: "string"
+        # format: "int64"
+      responses:
+        "200":
+          description: "{ \ndata: { \nconnectedAccountId, \nvendorName, \nvendorAccountId, \nteamAccountId, \nstatus, \ncustomerId, \ncustomerName, \nshipToId, \nShipToName, \norderCreateDate, \nfinalOrderDate, \nwebUserEmail, \nodProductId, \nproductDescription, \nwholesalerProductCode, \npackQty, \nqtySold, \ncodePlanId, \nnetSales, \ncontractNetSales, \nlistPrice, \nprogramPrice, \nretailListPrice, \nspecialProductId, \nproductId, \nspecialType, \nspecialMod, \nspecialLimit, \ntotalIssued, \ntotalClaimed, \ntotalAvailable, \ndateActivated, \ndateDeactivated, \nisFake \n}, \nsuccess: true, \nerror: null \n}"
+        "500":
+          description: "{ \ndata: null, \nsucces: false, \nerror: error \n}"
+      security:
+      - api_key: []
+  /api/special-product/all:
+    get:
+      tags:
+        - "Fetch All SpecialProduct entries"
+      summary: "fetch all special_product entries"
+      operationId: "getSpecialProductAll"
+      produces:
+      # - "application/xml"
+      - "application/json"
+      responses:
+        "200":
+          description: "{ \ndata: [ { \nid, \nspecialProductId, \nproductId, \nspecialType, \nspecialMod, \nspecialLimit, \ntotalIssued, \ntotalClaimed, \ntotalAvailable, \ndateActivated, \ndateDeactivated, \nisFake \n} ..., \n{} ], \nsuccess: true, \nerror: null \n}"
+        "500":
+          description: "{ \ndata: null, \nsucces: false, \nerror: error \n}"
+      security:
+      - api_key: []
+  /api/special-product/{vendorProductId}:
+    get:
+      tags:
+        - "Fetch SpecialProduct by vendorProductId"
+      summary: "fetch a single special_product entry"
+      operationId: "getSpecialProduct"
+      produces:
+      # - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "vendorProductId"
+        in: "path"
+        description: "(eg; \"?\")"
+        required: true
+        type: "string"
+        # format: "int64"
+      responses:
+        "200":
+          description: "{ \ndata: { \nid, \nspecialProductId, \nproductId, \nspecialType, \nspecialMod, \nspecialLimit, \ntotalIssued, \ntotalClaimed, \ntotalAvailable, \ndateActivated, \ndateDeactivated, \nisFake \n}, \nsuccess: true, \nerror: null \n}"
+        "500":
+          description: "{ \ndata: null, \nsucces: false, \nerror: error \n}"
+      security:
+      - api_key: []
+  
+  #UPDATE API
+  # /api/special-product/update/{vendorProductId}:
+  
+  #DELETE API
+  /api/special-product/delete/{vendorProductId}:
+    delete:
+      tags:
+        - "Delete SpecialProduct by vendorProductId"
+      summary: "remove a single special_product entry"
+      operationId: "deleteSpecialProduct"
+      produces:
+      # - "application/xml"
+      - "application/json"
+      parameters:
+      - name: "vendorProductId"
+        in: "path"
+        description: "(eg; \"?\")"
+        required: true
+        type: "string"
+      responses:
+        "200":
+          description: "{ \ndata: null, \nsuccess: true, \nerror: null \n}"
+        "500":
+          description: "{ \ndata: null, \nsucces: false, \nerror: error \n}"
+      security:
+      - api_key: []
+securityDefinitions:
+  petstore_auth:
+    type: "oauth2"
+    authorizationUrl: "http://petstore.swagger.io/oauth/dialog"
+    flow: "implicit"
+    scopes:
+      write:connected-accounts: "modify connected-accounts in your account"
+      read:connected-accounts: "read your connected-accounts"
+  api_key:
+    type: "apiKey"
+    name: "api_key"
+    in: "header"
+definitions:
+  ConnectedAccount:
+    type: "object"
+    properties:
+      connectedAccountId:
+        type: "string"
+        format: "uuid"
+      vendorName: 
+        type: "string"
+      vendorAccountId: 
+        type: "string"
+      teamAccountId: 
+        type: "integer"
+        format: "int64"
+      status: 
+        type: "string"
+    xml: 
+      name: "ConnectedAccount"
+  ConnectedAccountActivity:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        format: "uuid"
+      connectedAccountId:
+        type: "string"
+      vendorName: 
+        type: "string"
+      vendorAccountId: 
+        type: "integer"
+        format: "int64"
+      teamAccountId: 
+        type: "string"
+      status: 
+        type: "string"
+      customerId: 
+        type: "string"
+      customerName: 
+        type: "string"
+      shipToId:
+        type: "integer"
+        format: "int64"
+      shipToName: 
+        type: "string"
+      orderCreateDate: 
+        type: "string"
+        format: "date-time"
+      finalOrderDate: 
+        type: "string"
+        format: "date-time"
+      webUserEmail:
+        type: "string"
+      odProductCode:
+        type: "integer"
+        format: "int64"
+      productDescription:
+        type: "string"
+      wholesalerProductCode:
+        type: "string"
+      packQty:
+        type: "integer"
+        format: "int64"
+      qtySold:
+        type: "integer"
+        format: "int64"
+      codePlanId:
+        type: "integer"
+        format: "int64"
+      netSales:
+        type: "string"
+      contractNetSales:
+        type: "string"
+      listPrice:
+        type: "number"
+      programPrice:
+        type: "string"
+      retailListPrice:
+        type: "number"
+      specialProductId:
+        type: "string"
+      productId:
+        type: "string"
+      specialType:
+        type: "string"
+      specialMod:
+        type: "number"
+      specialLimit:
+        type: "number"
+      totalIssued:
+        type: "number"
+      totalClaimed:
+        type: "number"
+      totalAvailable:
+        type: "number"
+      dateActivated:
+        type: "string"
+        format: "date-time"
+      dateDeactivated:
+        type: "string"
+        format: "date-time"
+      isFake:
+        type: "boolean"
+        format: "integer"
+    xml: 
+      name: "ConnectedAccountActivity"
+  SpecialProduct:
+    type: "object"
+    properties: 
+      id: 
+        type: "string"
+        format: "uuid"
+      specialProductId:
+        type: "string"
+      productId:
+        type: "integer"
+        format: "int64"
+      specialType:
+        type: "string"
+      specialMod:
+        type: "number"
+      specialLimit:
+        type: "number"
+      totalIssued:
+        type: "number"
+      totalClaimed:
+        type: "number"
+      totalAvailable:
+        type: "number"
+      dateActivated:
+        type: "string"
+        format: "date-time"
+      dateDeactivated:
+        type: "string"
+        format: "date-time"
+      isFake:
+        type: "boolean"
+        format: "integer"
+    xml:
+      name: "SpecialProduct"
+  ApiResponse:
+    type: "object"
+    properties:
+      code:
+        type: "integer"
+        format: "int32"
+      type:
+        type: "string"
+      message:
+        type: "string"
+externalDocs:
+  description: "Find out more about Swagger"
+  url: "http://swagger.io"
